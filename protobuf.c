@@ -89,7 +89,7 @@ ZEND_END_ARG_INFO()
 
 const zend_function_entry pb_methods[] = {
 	PHP_ME(ProtobufMessage,	__construct, arginfo_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
-	PHP_ME_END	
+	{NULL, NULL, NULL}	
 };
 
 /* {{{ PHP_MINIT_FUNCTION
