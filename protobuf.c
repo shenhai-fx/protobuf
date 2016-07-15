@@ -84,6 +84,14 @@ static void php_protobuf_init_globals(zend_protobuf_globals *protobuf_globals)
 */
 /* }}} */
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_construct, 0, 0, 0)
+ZEND_END_ARG_INFO()
+
+const zend_function_entry pb_methods[] = {
+	PHPME(ProtobufMessage,	__construct, arginfo_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+	PHP_ME_END	
+};
+
 /* {{{ PHP_MINIT_FUNCTION
  */
 PHP_MINIT_FUNCTION(protobuf)
@@ -92,7 +100,7 @@ PHP_MINIT_FUNCTION(protobuf)
 	REGISTER_INI_ENTRIES();
 	*/
 	zend_class_entry zce;
-	INIT_CLASS_ENTRY(zce, "protobuf", pb_methods);
+	INIT_CLASS_ENTRY(zce, "ProtobufMessage", pb_methods);
 
 	pb_entry = zend_register_internal_class(&zce);
 
@@ -144,16 +152,6 @@ PHP_MINFO_FUNCTION(protobuf)
 	DISPLAY_INI_ENTRIES();
 	*/
 }
-/* }}} */
-
-/* {{{ protobuf_functions[]
- *
- * Every user visible function must have an entry in protobuf_functions[].
- */
-const zend_function_entry pb_methods[] = {
-	PHPME(ProtobufMessage,	__construct, arginfo_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
-	PHP_FE_END	/* Must be the last line in protobuf_functions[] */
-};
 /* }}} */
 
 /* {{{ protobuf_module_entry
