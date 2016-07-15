@@ -27,12 +27,17 @@
 #include "ext/standard/info.h"
 #include "php_protobuf.h"
 
+#define PB_VALUES_PROPERTY "values"
+
+#define PB_METHOD(func) PHP_METHOD(ProtobufMessage, func)
+
 /* If you declare any globals in php_protobuf.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(protobuf)
 */
 
 /* True global resources - no need for thread safety here */
 static int le_protobuf;
+zend_class_entry *pb_entry;
 
 /* {{{ PHP_INI
  */
@@ -51,19 +56,14 @@ PHP_INI_END()
 /* Every user-visible function in PHP should document itself in the source */
 /* {{{ proto string confirm_protobuf_compiled(string arg)
    Return a string to confirm that the module is compiled in */
-PHP_FUNCTION(confirm_protobuf_compiled)
+PB_METHOD(__construct)
 {
-	char *arg = NULL;
-	size_t arg_len, len;
-	zend_string *strg;
+	zval values;
+	array_init(&values);
 
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
-		return;
-	}
+	add_property_zval(getThis(), PB_VALUES_PROPERTY, &values);
 
-	strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "protobuf", arg);
-
-	RETURN_STR(strg);
+	php_printf("This is a protobuf extension for php7!\n");
 }
 /* }}} */
 /* The previous line is meant for vim and emacs, so it can correctly fold and
@@ -91,6 +91,11 @@ PHP_MINIT_FUNCTION(protobuf)
 	/* If you have INI entries, uncomment these lines
 	REGISTER_INI_ENTRIES();
 	*/
+	zend_class_entry zce;
+	INIT_CLASS_ENTRY(zce, "protobuf", pb_methods);
+
+	pb_entry = zend_register_internal_class(&zce);
+
 	return SUCCESS;
 }
 /* }}} */
@@ -145,8 +150,8 @@ PHP_MINFO_FUNCTION(protobuf)
  *
  * Every user visible function must have an entry in protobuf_functions[].
  */
-const zend_function_entry protobuf_functions[] = {
-	PHP_FE(confirm_protobuf_compiled,	NULL)		/* For testing, remove later. */
+const zend_function_entry pb_methods[] = {
+	PHPME(ProtobufMessage,	__construct, arginfo_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_FE_END	/* Must be the last line in protobuf_functions[] */
 };
 /* }}} */
@@ -156,7 +161,7 @@ const zend_function_entry protobuf_functions[] = {
 zend_module_entry protobuf_module_entry = {
 	STANDARD_MODULE_HEADER,
 	"protobuf",
-	protobuf_functions,
+	pb_methods,
 	PHP_MINIT(protobuf),
 	PHP_MSHUTDOWN(protobuf),
 	PHP_RINIT(protobuf),		/* Replace with NULL if there's nothing to do at request start */
