@@ -37,7 +37,6 @@
 #define PB_FIELD_NAME_PROPERTY "name"
 
 #define PB_METHOD(func) PHP_METHOD(ProtobufMessage, func)
-#define THIS_PTR getThis();
 #define RETURN_THIS() RETURN_ZVAL(getThis(), 1, 0);
 #define IS_32_BIT (sizeof(zend_long) < sizeof(int64_t))
 
@@ -69,7 +68,7 @@ PB_METHOD(__construct)
 	zval values;
 	array_init(&values);
 
-	add_property_zval(THIS_PTR, PB_VALUES_PROPERTY, &values);
+	add_property_zval(getThis(), PB_VALUES_PROPERTY, &values);
 }
 
 PB_METHOD(set)
@@ -81,17 +80,17 @@ PB_METHOD(set)
 		RETURN_THIS();
 	}
 
-	if ((values = pb_get_values(THIS_PTR)) == NULL) {
+	if ((values = pb_get_values(getThis())) == NULL) {
 		RETURN_THIS();
 	}
 
-	if ((old_value = pb_get_value(THIS_PTR, values, (zend_ulong)field_number)) == NULL) {
+	if ((old_value = pb_get_value(getThis(), values, (zend_ulong)field_number)) == NULL) {
 		RETURN_THIS();
 	}
 
 	if (Z_TYPE_P(value) != IS_NULL) {
 		zval_dtor(old_value);
-		pb_assign_value(THIS_PTR, old_value, value, field_number);
+		pb_assign_value(getThis(), old_value, value, field_number);
 
 		RETURN_THIS();
 	}
