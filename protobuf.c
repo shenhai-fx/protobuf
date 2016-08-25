@@ -124,6 +124,15 @@ PHP_MINIT_FUNCTION(protobuf)
 
 	pb_entry = zend_register_internal_class(&zce);
 
+	PB_CONSTANT(PB_TYPE_DOUBLE);
+	PB_CONSTANT(PB_TYPE_FIXED32);
+	PB_CONSTANT(PB_TYPE_FIXED64);
+	PB_CONSTANT(PB_TYPE_FLOAT);
+	PB_CONSTANT(PB_TYPE_INT);
+	PB_CONSTANT(PB_TYPE_SIGNED_INT);
+	PB_CONSTANT(PB_TYPE_STRING);
+	PB_CONSTANT(PB_TYPE_BOOL);
+
 	return SUCCESS;
 }
 
@@ -295,11 +304,11 @@ static int pb_assign_value(zval *this, zval *dest, zval *src, zend_ulong field_n
 				break;
 
 			default:
-				PB_COMPILE_ERROR_EX(this, "unexpected '%s' field type %d in field descriptor", pb_get_field_name(this, field_numberber), zend_get_type_by_const(Z_LVAL_P(type)));
+				PB_COMPILE_ERROR_EX(this, "unexpected '%s' field type %d in field descriptor", pb_get_field_name(this, field_number), zend_get_type_by_const(Z_LVAL_P(type)));
 				goto fail2;
 		}
 	} else if (Z_TYPE_P(type) != IS_STRING) {
-		PB_COMPILE_ERROR_EX(this, "unexpected %s type of '%s' field type in field descriptor", zend_get_type_by_const(Z_TYPE_P(type)), pb_get_field_name(this, field_numberber));
+		PB_COMPILE_ERROR_EX(this, "unexpected %s type of '%s' field type in field descriptor", zend_get_type_by_const(Z_TYPE_P(type)), pb_get_field_name(this, field_number));
 		goto fail2;
 	}
 
