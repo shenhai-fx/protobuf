@@ -73,6 +73,32 @@ PB_METHOD(__construct)
 	add_property_zval(getThis(), PB_VALUES_PROPERTY, &values);
 }
 
+PB_METHOD(append)
+{
+	zend_long field_number = -1;
+	zval *old_value_array, *values, *value, val;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "lz", &field_number, &value) == FAILURE) {
+		RETURN_THIS();
+	}
+
+	if ((values = pb_get_values(getThis())) == NULL) {
+		RETURN_THIS();
+	}
+
+	if ((old_value_array = pb_get_value(getThis(), values, (zend_ulong)field_number)) == NULL) {
+		RETURN_THIS();
+	}
+
+	if (pb_assign_value(getThis(), &val, value, (zend_ulong)field_number) != 0) {
+		RETURN_THIS();
+	}
+
+	add_next_index_zval(old_value_array, val);
+
+	RETURN_THIS();
+}
+
 PB_METHOD(set)
 {
 	zend_long field_number = -1;
@@ -91,14 +117,14 @@ PB_METHOD(set)
 	}
 
 	if (Z_TYPE_P(value) != IS_NULL) {
-		zval_dtor(old_value);
+		zval_ptr_dtor(old_value);
 		pb_assign_value(getThis(), old_value, value, field_number);
 
 		RETURN_THIS();
 	}
 
 	if (Z_TYPE_P(old_value) != IS_NULL) {
-		zval_dtor(old_value);
+		zval_ptr_dtor(old_value);
 		ZVAL_NULL(old_value);
 	}
 
