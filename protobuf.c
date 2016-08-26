@@ -94,7 +94,7 @@ PB_METHOD(append)
 		RETURN_THIS();
 	}
 
-	add_next_index_zval(old_value_array, val);
+	add_next_index_zval(old_value_array, &val);
 
 	RETURN_THIS();
 }
