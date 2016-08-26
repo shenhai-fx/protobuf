@@ -154,6 +154,11 @@ PB_METHOD(get)
 ZEND_BEGIN_ARG_INFO_EX(arginfo_construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_append, 0, 0, 2)
+	ZEND_ARG_INFO(0, field_number)
+	ZEND_ARG_INFO(0, value)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_set, 0, 0, 2)
 	ZEND_ARG_INFO(0, field_number)
 	ZEND_ARG_INFO(0, value)
@@ -165,6 +170,7 @@ ZEND_END_ARG_INFO()
 
 const zend_function_entry pb_methods[] = {
 	PHP_ME(ProtobufMessage,	__construct, arginfo_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
+	PHP_ME(ProtobufMessage,	append, arginfo_append, ZEND_ACC_PUBLIC)
 	PHP_ME(ProtobufMessage,	set, arginfo_set, ZEND_ACC_PUBLIC)
 	PHP_ME(ProtobufMessage,	get, arginfo_get, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}	
