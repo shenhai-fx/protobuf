@@ -105,6 +105,26 @@ PB_METHOD(set)
 	RETURN_THIS();
 }
 
+PB_METHOD(get)
+{
+	zend_long field_number = -1;
+	zval *values, *value;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &field_number) == FAILURE) {
+		RETURN_THIS();
+	}
+
+	if ((values = pb_get_values(getThis())) == NULL) {
+		RETURN_THIS();
+	}
+
+	if ((value = pb_get_value(getThis(), values, (zend_ulong)field_number)) == NULL) {
+		RETURN_THIS();
+	}
+
+	RETURN_ZVAL(value, 1, 0);
+}
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_construct, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
@@ -113,9 +133,14 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_set, 0, 0, 2)
 	ZEND_ARG_INFO(0, value)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_get, 0, 0, 1)
+	ZEND_ARG_INFO(0, field_number)
+ZEND_END_ARG_INFO()
+
 const zend_function_entry pb_methods[] = {
 	PHP_ME(ProtobufMessage,	__construct, arginfo_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(ProtobufMessage,	set, arginfo_set, ZEND_ACC_PUBLIC)
+	PHP_ME(ProtobufMessage,	get, arginfo_get, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}	
 };
 
