@@ -99,6 +99,35 @@ PB_METHOD(append)
 	RETURN_THIS();
 }
 
+PB_METHOD(clear)
+{
+	zend_long field_number = -1;
+
+	zval *old_value_array, *values;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "l", &field_number) == FAILURE) {
+		RETURN_THIS();
+	}
+
+	if ((values = pb_get_values(getThis())) == NULL) {
+		RETURN_THIS();
+	}
+
+	if ((old_value_array = pb_get_value(getThis(), values, (zend_ulong)field_number)) == NULL) {
+		RETURN_THIS();
+	}
+
+	if (Z_TYPE_P(old_value_array) != IS_ARRAY) {
+		PB_COMPILE_ERROR("'%s' field internal type should be an array", pb_get_field_name(getThis(), (zend_ulong)field_number));
+
+		RETURN_THIS();
+	}
+
+	zend_hash_clean(Z_ARRVAL_P(old_value_array));
+	
+	RETURN_THIS();
+}
+
 PB_METHOD(set)
 {
 	zend_long field_number = -1;
@@ -159,6 +188,10 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_append, 0, 0, 2)
 	ZEND_ARG_INFO(0, value)
 ZEND_END_ARG_INFO()
 
+ZEND_BEGIN_ARG_INFO_EX(arginfo_clear, 0, 0, 1)
+	ZEND_ARG_INFO(0, field_number)
+ZEND_END_ARG_INFO()
+
 ZEND_BEGIN_ARG_INFO_EX(arginfo_set, 0, 0, 2)
 	ZEND_ARG_INFO(0, field_number)
 	ZEND_ARG_INFO(0, value)
@@ -171,6 +204,7 @@ ZEND_END_ARG_INFO()
 const zend_function_entry pb_methods[] = {
 	PHP_ME(ProtobufMessage,	__construct, arginfo_construct, ZEND_ACC_PUBLIC | ZEND_ACC_CTOR)
 	PHP_ME(ProtobufMessage,	append, arginfo_append, ZEND_ACC_PUBLIC)
+	PHP_ME(ProtobufMessage,	clear, arginfo_clear, ZEND_ACC_PUBLIC)
 	PHP_ME(ProtobufMessage,	set, arginfo_set, ZEND_ACC_PUBLIC)
 	PHP_ME(ProtobufMessage,	get, arginfo_get, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}	
