@@ -219,7 +219,8 @@ ZEND_BEGIN_ARG_INFO_EX(arginfo_clear, 0, 0, 1)
 	ZEND_ARG_INFO(0, field_number)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO_EX(arginfo_count, 0, 0, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_count, 0, 0, 1)
+	ZEND_ARG_INFO(0, field_number)
 ZEND_END_ARG_INFO()
 
 ZEND_BEGIN_ARG_INFO_EX(arginfo_set, 0, 0, 2)
